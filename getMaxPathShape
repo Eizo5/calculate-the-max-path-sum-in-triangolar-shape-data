@@ -1,0 +1,78 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.sql.Array;
+import java.util.LinkedList;
+import java.util.Scanner;
+
+public class GetMaxPathSum {
+    int [][] finalTriangle;
+    boolean firstValue = false;
+    public  void readFile() throws FileNotFoundException {
+        File file = new File("C:\\Users\\abdul\\IdeaProjects\\Assesment\\src\\Test.txt"); // <------------ please write your file path here.
+        Scanner scanner = new Scanner(file);
+        int count = 0;
+        LinkedList <Integer> list = new LinkedList<>();
+        while(scanner.hasNext()){
+            int x = scanner.nextInt();
+            list.add(x);
+            count++;
+        }
+        int length = (int) Math.floor(count/2);
+        int [][] triangleConversion = new int[length][length+1];
+        int temp = 0;
+        int count2 = 0;
+        for (int i = 0 ; i < length ; i ++) {
+            count2++;
+            if (temp >= list.size()){
+                break;
+            }
+            for (int j = 0; j <= i; j++) {
+                triangleConversion[i][j] = list.get(temp);
+                ++temp;
+
+            }
+        }
+         finalTriangle = new int[count2][count2];
+        for (int i = 0 ; i < count2 - 1 ; i ++) {
+            for (int j = 0; j <= i; j++) {
+                finalTriangle[i][j] = triangleConversion[i][j];
+            }
+        }
+
+
+    }
+    public  int getMaxPathSum(int[][] finalTriangle, int i, int j, int sum, int max){
+
+          if ( firstValue== false) {
+              firstValue = true;
+              sum = finalTriangle[i][j] + getMaxPathSum(finalTriangle, i + 1, j, sum, max);
+              max = sum;
+              sum = finalTriangle[i][j] + getMaxPathSum(finalTriangle, i + 1, j + 1, sum, max);
+
+          }
+          else {
+              if (isPrime(finalTriangle[i][j]) || j == finalTriangle.length || i == finalTriangle.length) {
+                  return 0;
+              } else {
+                  sum = finalTriangle[i][j] + getMaxPathSum(finalTriangle, i + 1, j, sum, max);
+                  max = sum;
+                  sum = finalTriangle[i][j] + getMaxPathSum(finalTriangle, i + 1, j + 1, sum, max);
+              }
+          }
+            if (sum > max) {
+                max = sum;
+            }
+
+        return max;
+    }
+    public static boolean isPrime (int n){
+        if (n == 0 || n == 1 || n == 2)
+            return true;
+        for (int i = 2 ; i<n ; i ++){
+            if (n%i == 0){
+                return false;
+            }
+        }
+        return true;
+    }
+}
